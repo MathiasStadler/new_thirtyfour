@@ -115,7 +115,6 @@ async fn run() -> color_eyre::Result<()> {
     //select exchange
     let exchange_nyse_xpath: &str =
         "/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[1]/td[2]/select/option[3]";
-    // "/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[1]/td[2]/div/table/tbody/tr/td[2]/a";
     let elem_exchange_nyse: WebElement = driver.find(By::XPath(exchange_nyse_xpath)).await?;
     elem_exchange_nyse.click().await?;
 
@@ -124,7 +123,7 @@ async fn run() -> color_eyre::Result<()> {
 
     //select Market Cap.
     let market_cap_xpath: &str =
-        "/html/body/div[3]/table/tbody/tr[3]/td/div/form/table/tbody/tr[2]/td[2]/select/option[9]";
+        "/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[1]/td[2]/select/option[3]";
     let elem_market_cap: WebElement = driver.find(By::XPath(market_cap_xpath)).await?;
     elem_market_cap.click().await?;
 
@@ -132,8 +131,10 @@ async fn run() -> color_eyre::Result<()> {
     tokio::time::sleep(Duration::from_secs(3)).await;
 
     //select Option/Short => Optionable
+    
     let market_cap_xpath: &str =
-        "/html/body/div[3]/table/tbody/tr[3]/td/div/form/table/tbody/tr[8]/td[8]/select/option[2]";
+    "/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[8]/td[10]/select/option[2]";
+    //    "/html/body/div[3]/table/tbody/tr[3]/td/div/form/table/tbody/tr[8]/td[8]/select/option[2]";
     let elem_market_cap: WebElement = driver.find(By::XPath(market_cap_xpath)).await?;
     elem_market_cap.click().await?;
 
@@ -141,7 +142,7 @@ async fn run() -> color_eyre::Result<()> {
     tokio::time::sleep(Duration::from_secs(3)).await;
 
     //200-Day Simple Moving Average
-    let over_200_xpath: &str = "/html/body/div[3]/table/tbody/tr[3]/td/div/form/table/tbody/tr[10]/td[6]/select/option[12]";
+    let over_200_xpath: &str = "/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[10]/td[8]/select/option[12]";
     let elem_over_200: WebElement = driver.find(By::XPath(over_200_xpath)).await?;
     elem_over_200.click().await?;
 
@@ -149,10 +150,10 @@ async fn run() -> color_eyre::Result<()> {
     tokio::time::sleep(Duration::from_secs(3)).await;
 
     //50-Day Simple Moving Average
-    let over_200_xpath: &str =
-        "/html/body/div[3]/table/tbody/tr[3]/td/div/form/table/tbody/tr[10]/td[4]/select/option[9]";
-    let elem_over_200: WebElement = driver.find(By::XPath(over_200_xpath)).await?;
-    elem_over_200.click().await?;
+    let sma_over_50_xpath: &str =
+        "elem_sma_over_50_xpath";
+    let elem_sma_over_50: WebElement = driver.find(By::XPath(sma_over_50_xpath)).await?;
+    elem_sma_over_50.click().await?;
 
     //wait for refresh
     tokio::time::sleep(Duration::from_secs(3)).await;
