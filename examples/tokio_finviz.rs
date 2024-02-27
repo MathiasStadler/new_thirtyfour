@@ -7,10 +7,10 @@
 //!     cargo run --example tokio_async
 
 extern crate sxd_document;
-extern crate sxd_xpath;
+// extern crate sxd_xpath;
 
 // use std::fs;
-use std::process;
+// old use std::process;
 use thirtyfour::prelude::*;
 use tokio::time::*;
 
@@ -75,6 +75,13 @@ async fn run() -> color_eyre::Result<()> {
         .await?;
     elem_form.click().await?;
 
+    // let status = driver.status().await?;
+    println!("Status driver => {:?}", driver.status().await?);
+
+    tokio::time::sleep(Duration::from_secs(2)).await;
+    // select screener
+    println!("Click on screener");
+
     // click on screener
     // xpath
     // /html/body/table[2]/tbody/tr/td/table/tbody/tr/td[3]/a
@@ -85,12 +92,10 @@ async fn run() -> color_eyre::Result<()> {
         .await?;
     elem_screener.click().await?;
 
+    println!("Status driver => {:?}", driver.status().await?);
+
     //wait for screener
-    tokio::time::sleep(Duration::from_secs(10)).await;
-
-    // set_filter_items(&driver,"/html/body/div[3]/table/tbody/tr[2]/td/table/tbody/tr[2]/td[8]");
-
-    //process::exit(1);
+    tokio::time::sleep(Duration::from_secs(3)).await;
 
     // select screener all view
     let screener_all_view_xpath: &str = "/html/body/div[4]/table/tbody/tr[2]/td/div/div[2]/div[5]";
@@ -98,8 +103,9 @@ async fn run() -> color_eyre::Result<()> {
     let elem_screener_all: WebElement = driver.find(By::XPath(screener_all_view_xpath)).await?;
     elem_screener_all.click().await?;
 
+    println!("Status driver => {:?}", driver.status().await?);
     //wait for screener
-    tokio::time::sleep(Duration::from_secs(3)).await;
+    //tokio::time::sleep(Duration::from_secs(3)).await;
 
     driver.maximize_window().await?;
 
@@ -108,7 +114,8 @@ async fn run() -> color_eyre::Result<()> {
 
     //select exchange
     let exchange_nyse_xpath: &str =
-        "/html/body/div[3]/table/tbody/tr[3]/td/div/form/table/tbody/tr[1]/td[2]/select/option[4]";
+        "/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[1]/td[2]/select/option[3]";
+    // "/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[1]/td[2]/div/table/tbody/tr/td[2]/a";
     let elem_exchange_nyse: WebElement = driver.find(By::XPath(exchange_nyse_xpath)).await?;
     elem_exchange_nyse.click().await?;
 
