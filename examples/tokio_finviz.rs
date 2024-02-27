@@ -10,6 +10,7 @@ extern crate sxd_document;
 extern crate sxd_xpath;
 
 // use std::fs;
+use std::process;
 use thirtyfour::prelude::*;
 use tokio::time::*;
 
@@ -92,8 +93,8 @@ async fn run() -> color_eyre::Result<()> {
     //process::exit(1);
 
     // select screener all view
-    let screener_all_view_xpath: &str =
-        "/html/body/div[3]/table/tbody/tr[2]/td/table/tbody/tr[2]/td[8]";
+    let screener_all_view_xpath: &str = "/html/body/div[4]/table/tbody/tr[2]/td/div/div[2]/div[5]";
+
     let elem_screener_all: WebElement = driver.find(By::XPath(screener_all_view_xpath)).await?;
     elem_screener_all.click().await?;
 
