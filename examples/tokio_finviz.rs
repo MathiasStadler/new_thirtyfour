@@ -131,9 +131,9 @@ async fn run() -> color_eyre::Result<()> {
     tokio::time::sleep(Duration::from_secs(3)).await;
 
     //select Option/Short => Optionable
-    
+
     let market_cap_xpath: &str =
-    "/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[8]/td[10]/select/option[2]";
+        "/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[8]/td[10]/select/option[2]";
     //    "/html/body/div[3]/table/tbody/tr[3]/td/div/form/table/tbody/tr[8]/td[8]/select/option[2]";
     let elem_market_cap: WebElement = driver.find(By::XPath(market_cap_xpath)).await?;
     elem_market_cap.click().await?;
@@ -151,7 +151,7 @@ async fn run() -> color_eyre::Result<()> {
 
     //50-Day Simple Moving Average
     let sma_over_50_xpath: &str =
-        "elem_sma_over_50_xpath";
+        "/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[10]/td[6]/select/option[8]";
     let elem_sma_over_50: WebElement = driver.find(By::XPath(sma_over_50_xpath)).await?;
     elem_sma_over_50.click().await?;
 
@@ -159,7 +159,7 @@ async fn run() -> color_eyre::Result<()> {
     tokio::time::sleep(Duration::from_secs(3)).await;
 
     // Price
-    let price_xpath: &str = "/html/body/div[3]/table/tbody/tr[3]/td/div/form/table/tbody/tr[13]/td[2]/select/option[40]";
+    let price_xpath: &str = "/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[13]/td[8]/select/option[39]";
     let elem_price: WebElement = driver.find(By::XPath(price_xpath)).await?;
     elem_price.click().await?;
 
@@ -167,7 +167,7 @@ async fn run() -> color_eyre::Result<()> {
     tokio::time::sleep(Duration::from_secs(3)).await;
 
     //Pattern channel up
-    let pattern_xpath: &str = "/html/body/div[3]/table/tbody/tr[3]/td/div/form/table/tbody/tr[11]/td[8]/select/option[18]";
+    let pattern_xpath: &str = "/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[13]/td[8]/select/option[39]";
     let elem_pattern: WebElement = driver.find(By::XPath(pattern_xpath)).await?;
     elem_pattern.click().await?;
 
@@ -176,28 +176,42 @@ async fn run() -> color_eyre::Result<()> {
 
     //PEG over one
     let peg_over_one_xpath: &str =
-        "/html/body/div[3]/table/tbody/tr[3]/td/div/form/table/tbody/tr[2]/td[8]/select/option[7]";
+        "/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[2]/td[8]/select/option[7]";
     let elem_peg_over_one: WebElement = driver.find(By::XPath(peg_over_one_xpath)).await?;
     elem_peg_over_one.click().await?;
 
     //wait for refresh
     tokio::time::sleep(Duration::from_secs(3)).await;
 
-    //EPS year
+    //EPS year positive
     let eps_year_xpath: &str =
-        "/html/body/div[3]/table/tbody/tr[3]/td/div/form/table/tbody/tr[2]/td[8]/select/option[7]";
+            "/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[2]/td[8]/select/option[7]";
     let elem_eps_year: WebElement = driver.find(By::XPath(eps_year_xpath)).await?;
     elem_eps_year.click().await?;
 
     //wait for refresh
     tokio::time::sleep(Duration::from_secs(3)).await;
 
-    // for what
-    //println!("Driver status => {}",driver.status());
+    //EPS qtr positive
+    let eps_qtr_xpath: &str =
+        "/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[4]/td[8]/select/option[3]";
+    let elem_eps_qtr: WebElement = driver.find(By::XPath(eps_qtr_xpath)).await?;
+    elem_eps_qtr.click().await?;
+
+//wait for refresh
+tokio::time::sleep(Duration::from_secs(3)).await;
 
     //PEG
-    //EPS year
-    //EPS qtr
+    let peg_xpath: &str =
+        "/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[2]/td[8]/select/option[7]";
+    let elem_peg: WebElement = driver.find(By::XPath(peg_xpath)).await?;
+    elem_peg.click().await?;
+
+    //wait for refresh
+    tokio::time::sleep(Duration::from_secs(3)).await;
+
+    
+    
 
     //wait for debug not necessary
     tokio::time::sleep(Duration::from_secs(20)).await;
