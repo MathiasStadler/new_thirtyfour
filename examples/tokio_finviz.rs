@@ -185,7 +185,7 @@ async fn run() -> color_eyre::Result<()> {
 
     //EPS year positive
     let eps_year_xpath: &str =
-            "/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[2]/td[8]/select/option[7]";
+            "/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[3]/td[8]/select/option[3]";
     let elem_eps_year: WebElement = driver.find(By::XPath(eps_year_xpath)).await?;
     elem_eps_year.click().await?;
 
@@ -201,7 +201,7 @@ async fn run() -> color_eyre::Result<()> {
 //wait for refresh
 tokio::time::sleep(Duration::from_secs(3)).await;
 
-    //PEG
+    //PEG over 1
     let peg_xpath: &str =
         "/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[2]/td[8]/select/option[7]";
     let elem_peg: WebElement = driver.find(By::XPath(peg_xpath)).await?;
@@ -210,6 +210,18 @@ tokio::time::sleep(Duration::from_secs(3)).await;
     //wait for refresh
     tokio::time::sleep(Duration::from_secs(3)).await;
 
+// clean clipboard
+// export DISPLAY=:0
+// xclip -sel clip < /dev/null
+
+    //BETA 
+    let beta_xpath: &str =
+        "/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[12]/td[6]/select/option[7]";
+    let elem_beta: WebElement = driver.find(By::XPath(beta_xpath)).await?;
+    elem_beta.click().await?;
+
+    //wait for refresh
+    tokio::time::sleep(Duration::from_secs(3)).await;
     
     
 
