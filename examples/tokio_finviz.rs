@@ -105,13 +105,17 @@ async fn run() -> color_eyre::Result<()> {
 
     println!("Status driver => {:?}", driver.status().await?);
     //wait for screener
-    //tokio::time::sleep(Duration::from_secs(3)).await;
+    tokio::time::sleep(Duration::from_secs(3)).await;
 
     driver.maximize_window().await?;
+
+    println!("Status driver => {:?}", driver.status().await?);
 
     //wait for screener
     tokio::time::sleep(Duration::from_secs(3)).await;
 
+    println!("Status driver => {:?}", driver.status().await?);
+    
     //select exchange
     let exchange_nyse_xpath: &str =
         "/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[1]/td[2]/select/option[3]";
