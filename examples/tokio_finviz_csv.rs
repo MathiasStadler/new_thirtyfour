@@ -6,11 +6,7 @@
 //!
 //!     cargo run --example tokio_async
 
-extern crate sxd_document;
-// extern crate sxd_xpath;
 
-// use std::fs;
-// old use std::process;
 use thirtyfour::prelude::*;
 use tokio::time::*;
 
@@ -21,11 +17,7 @@ fn main() -> color_eyre::Result<()> {
     rt.block_on(run())
 }
 
-///html/body/div[3]/div/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr/td[4]/div/div/div[1]/div/div[2]/div/div/canvas
-////html/body/div[3]/div/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr/td[4]/div/div/div[1]/div/div[2]/div/div/canvas
-/// /html/body/div[3]/div/table/tbody/tr/td/div[2]/table/tbody/tr[2]/td/table/tbody/tr/td[1]/table/tbody/tr[4]/td[2]
-/// /html/body/div[3]/div/table/tbody/tr/td/div[2]/table/tbody/tr[2]/td/table/tbody/tr/td[1]/table/tbody/tr[4]/td[2]
-/// /html/body/div[1]/div/div/div/div[2]/div/button[3]
+
 
 /* function `set_filter_items` is never used
 async fn set_filter_items(driver: &WebDriver,xpath_path : &str)  -> color_eyre::Result<()> {
@@ -52,10 +44,9 @@ async fn run() -> color_eyre::Result<()> {
     //let caps = DesiredCapabilities::firefox();
     let driver: WebDriver = WebDriver::new("http://localhost:9515", caps).await?;
 
-    //driver.maximize_window().await?;
-
-    // Navigate to https://finviz.com
+    // Navigate to target page 
     driver.goto("https://finviz.com").await?;
+
 
     //wait 5 second
     //from here
@@ -64,9 +55,7 @@ async fn run() -> color_eyre::Result<()> {
 
     // site title
     println!("Title = {}", driver.title().await?);
-
-    // just a test ok
-    // driver.full screen_window().await?;
+   
 
     let elem_form: WebElement = driver
         .find(By::XPath(
@@ -75,16 +64,15 @@ async fn run() -> color_eyre::Result<()> {
         .await?;
     elem_form.click().await?;
 
-    // let status = driver.status().await?;
+    // wait for page already load
     println!("Status driver => {:?}", driver.status().await?);
 
     tokio::time::sleep(Duration::from_secs(2)).await;
+    
     // select screener
     println!("Click on screener");
 
-    // click on screener
-    // xpath
-    // /html/body/table[2]/tbody/tr/td/table/tbody/tr/td[3]/a
+    // click on button screener
     let elem_screener: WebElement = driver
         .find(By::XPath(
             "/html/body/table[2]/tbody/tr/td/table/tbody/tr/td[3]/a",
@@ -135,10 +123,8 @@ async fn run() -> color_eyre::Result<()> {
     tokio::time::sleep(Duration::from_secs(3)).await;
 
     //select Option/Short => Optionable
-
     let market_cap_xpath: &str =
         "/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[8]/td[10]/select/option[2]";
-    //    "/html/body/div[3]/table/tbody/tr[3]/td/div/form/table/tbody/tr[8]/td[8]/select/option[2]";
     let elem_market_cap: WebElement = driver.find(By::XPath(market_cap_xpath)).await?;
     elem_market_cap.click().await?;
 
@@ -162,7 +148,16 @@ async fn run() -> color_eyre::Result<()> {
     //wait for refresh
     tokio::time::sleep(Duration::from_secs(3)).await;
 
-    // Price
+    //20-Day Simple Moving Average
+    let sma_over_20_xpath: &str =
+    "/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[10]/td[4]/select/option[8]";
+    let elem_sma_over_20: WebElement = driver.find(By::XPath(sma_over_20_xpath)).await?;
+    elem_sma_over_20.click().await?;
+
+    //wait for refresh
+    tokio::time::sleep(Duration::from_secs(3)).await;
+
+    // price
     let price_xpath: &str = "/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[13]/td[8]/select/option[39]";
     let elem_price: WebElement = driver.find(By::XPath(price_xpath)).await?;
     elem_price.click().await?;
@@ -202,8 +197,8 @@ async fn run() -> color_eyre::Result<()> {
     let elem_eps_qtr: WebElement = driver.find(By::XPath(eps_qtr_xpath)).await?;
     elem_eps_qtr.click().await?;
 
-//wait for refresh
-tokio::time::sleep(Duration::from_secs(3)).await;
+    //wait for refresh
+    tokio::time::sleep(Duration::from_secs(3)).await;
 
     //PEG over 1
     let peg_xpath: &str =
@@ -214,10 +209,6 @@ tokio::time::sleep(Duration::from_secs(3)).await;
     //wait for refresh
     tokio::time::sleep(Duration::from_secs(3)).await;
 
-// clean clipboard
-// export DISPLAY=:0
-// xclip -sel clip < /dev/null
-
     //BETA 
     let beta_xpath: &str =
         "/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[12]/td[6]/select/option[7]";
@@ -227,19 +218,51 @@ tokio::time::sleep(Duration::from_secs(3)).await;
     //wait for refresh
     tokio::time::sleep(Duration::from_secs(3)).await;
     
-    
-
     //wait for debug not necessary
     tokio::time::sleep(Duration::from_secs(20)).await;
 
-    // get result
-    //old
-    // let result_xpath: &str="/html/body/div[3]/table/tbody/tr[4]/td/div/table/tbody/tr[5]/td";
-    /*let result_xpath: &str =
-            "/html/body/div[3]/table/tbody/tr[4]/td/div/table/tbody/tr[4]/td/table/tbody/tr[2]/td[2]/a";
-    */
-    // let elem_result: Result<WebElement, std::num::ParseIntError> = driver.find(By::XPath(result_xpath)).await?;
+    // thead
+    let table_result_thead_xpath = "/html/body/div[4]/table/tbody/tr[4]/td/div/table/tbody/tr[5]/td/table/tbody/tr/td/table/thead" ;
+    let thead_rows_vec:Vec<WebElement> = driver.find_all(By::XPath(table_result_thead_xpath)).await?;
 
+        for thead_row in thead_rows_vec{
+            println!("row => {}",thead_row);
+            println!("row Name: {}",thead_row.tag_name().await?);
+            println!("row Text: {}",thead_row.text().await?);
+
+            let thead_cell_vec:Vec<WebElement> = thead_row.find_all(By::XPath("/td")).await?;
+        
+        for thead_cell in thead_cell_vec {
+            println!("cell => {}",thead_cell);
+            println!("cell Name: {}",thead_cell.tag_name().await?);
+            println!("cell Text: {}",thead_cell.text().await?);
+        }
+        }
+
+
+
+    let table_result_xpath: &str="/html/body/div[4]/table/tbody/tr[4]/td/div/table/tbody/tr[5]/td/table/tbody/tr/td/table/tbody/tr";
+    let tbody_rows_vec:Vec<WebElement> = driver.find_all(By::XPath(table_result_xpath)).await?;
+    
+
+    for tbody_row in tbody_rows_vec {
+        println!("row => {}",tbody_row);
+        println!("row Name => {}",tbody_row.tag_name().await?);
+        println!("row Text => {}",tbody_row.text().await?);
+
+        let tbody_cell_vec:Vec<WebElement> = tbody_row.find_all(By::XPath("/td")).await?;
+        
+        for tbody_cell in tbody_cell_vec {
+            println!("cell => {}",tbody_cell);
+            println!("cell Name: {}",tbody_cell.tag_name().await?);
+            println!("cell Text: {}",tbody_cell.text().await?);
+        }
+    }
+
+
+    // get result
+    // let result_xpath: &str="/html/body/div[4]/table/tbody/tr[4]/td/div/table/tbody/tr[3]/td/div/div/div[1]";
+    // let elem_result: Result<WebElement, std::num::ParseIntError> = driver.find(By::XPath(result_xpath)).await?;
     // println!("Ticker {}", elem_result);
 
     //from here
