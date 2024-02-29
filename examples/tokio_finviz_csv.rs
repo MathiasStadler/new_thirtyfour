@@ -259,6 +259,7 @@ async fn run() -> color_eyre::Result<()> {
         }
     }
 
+    
 
     // get result
     // let result_xpath: &str="/html/body/div[4]/table/tbody/tr[4]/td/div/table/tbody/tr[3]/td/div/div/div[1]";
