@@ -6,18 +6,52 @@
 //!
 //!     cargo run --example tokio_async
 
-
-use thirtyfour::prelude::*;
+use std::error::Error;
 use tokio::time::*;
+use thirtyfour::{
+    prelude::{ElementWaitable, WebDriverError},
+    By, DesiredCapabilities, WebDriver, WebElement,
+};
+const WEB_XPATH:&[&[&str]] = &[
+     //No.,FieldName,xpath        
+     &["1","accept","/html/body/div[1]/div/div/div/div[2]/div/button[3]"],
+     &["2","screener","/html/body/table[2]/tbody/tr/td/table/tbody/tr/td[3]/a"],
+     &["3","screener all view","/html/body/div[4]/table/tbody/tr[2]/td/div/div[2]/div[5]"],
+     &["4","select exchange","/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[1]/td[2]/select/option[3]"],
+     &["5","select Market Cap","/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[1]/td[2]/select/option[3]"],
+     &["6","select Option/Short","/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[8]/td[10]/select/option[2]"],
+     &["7","200-Day Simple Moving Average","/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[10]/td[8]/select/option[12]"],
+     &["8","sma_over_50_xpath","/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[10]/td[6]/select/option[8]"],
+         
+];
 
-fn main() -> color_eyre::Result<()> {
+
+async fn wait_seconds(wait_seconds:u64)-> color_eyre::Result<()>{
+    //wait 5 second - TIP from here
+    //https://dev.to/stevepryde/using-selenium-with-rust-aca
+    tokio::time::sleep(Duration::from_secs(wait_seconds)).await;
+Ok(())
+} 
+
+async fn wait_5_seconds()-> color_eyre::Result<()>{
+    //wait 5 second - TIP from here
+    //https://dev.to/stevepryde/using-selenium-with-rust-aca
+    tokio::time::sleep(Duration::from_secs(5)).await;
+Ok(())
+} 
+
+fn main() -> color_eyre::Result<(), Box<dyn Error>> {
     let rt: tokio::runtime::Runtime = tokio::runtime::Builder::new_current_thread()
         .enable_all()
         .build()?;
-    rt.block_on(run())
+    Ok(rt.block_on(scraping())?)
 }
 
-async fn run() -> color_eyre::Result<()> {
+
+
+
+
+async fn scraping() -> color_eyre::Result<()> {
     // The use of color_eyre gives much nicer error reports, including making
     // it much easier to locate where the error occurred.
     color_eyre::install()?;
@@ -31,18 +65,17 @@ async fn run() -> color_eyre::Result<()> {
     // Navigate to target page 
     driver.goto("https://finviz.com").await?;
 
-
-    //wait 5 second - TIP from here
-    //https://dev.to/stevepryde/using-selenium-with-rust-aca
-    tokio::time::sleep(Duration::from_secs(5)).await;
-
     // site title
     println!("Title = {}", driver.title().await?);
-   
+
+    wait_5_seconds().await?;
+
+    wait_seconds(3).await?;
 
     let elem_form: WebElement = driver
         .find(By::XPath(
-            "/html/body/div[1]/div/div/div/div[2]/div/button[3]",
+            WEB_XPATH[0][2],
+           // "/html/body/div[1]/div/div/div/div[2]/div/button[3]",
         ))
         .await?;
     elem_form.click().await?;
@@ -121,7 +154,7 @@ async fn run() -> color_eyre::Result<()> {
 
     //wait for screener
     println!("Status driver => {:?}", driver.status().await?);
-    tokio::time::sleep(Duration::from&["1","","",],_secs(3)).await;
+    tokio::time::sleep(Duration::from_secs(3)).await;
 
     //50-Day Simple Moving Average
     let sma_over_50_xpath: &str =
