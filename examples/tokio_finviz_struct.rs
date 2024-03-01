@@ -17,22 +17,6 @@ fn main() -> color_eyre::Result<()> {
     rt.block_on(run())
 }
 
-
-
-/* function `set_filter_items` is never used
-async fn set_filter_items(driver: &WebDriver,xpath_path : &str)  -> color_eyre::Result<()> {
-    //color_eyre::install()?;
-
-    println!("str {}",xpath_path);
-    //let elem_exchange_nyse: WebElement = driver.find(By::XPath(exchange_nyse_xpath)).await?;
-    //elem_exchange_nyse.click().await?;
-    driver.find(By::XPath(xpath_path)).await?.click().await?;
-
-    Ok(())
-
-}
-*/
-
 async fn run() -> color_eyre::Result<()> {
     // The use of color_eyre gives much nicer error reports, including making
     // it much easier to locate where the error occurred.
@@ -48,8 +32,7 @@ async fn run() -> color_eyre::Result<()> {
     driver.goto("https://finviz.com").await?;
 
 
-    //wait 5 second
-    //from here
+    //wait 5 second - TIP from here
     //https://dev.to/stevepryde/using-selenium-with-rust-aca
     tokio::time::sleep(Duration::from_secs(5)).await;
 
@@ -85,24 +68,21 @@ async fn run() -> color_eyre::Result<()> {
     //wait for screener
     tokio::time::sleep(Duration::from_secs(3)).await;
 
-    // select screener all view
+    // select screener all view and click
     let screener_all_view_xpath: &str = "/html/body/div[4]/table/tbody/tr[2]/td/div/div[2]/div[5]";
-
     let elem_screener_all: WebElement = driver.find(By::XPath(screener_all_view_xpath)).await?;
     elem_screener_all.click().await?;
 
-    println!("Status driver => {:?}", driver.status().await?);
     //wait for screener
+    println!("Status driver => {:?}", driver.status().await?);
     tokio::time::sleep(Duration::from_secs(3)).await;
+
 
     driver.maximize_window().await?;
 
-    println!("Status driver => {:?}", driver.status().await?);
-
     //wait for screener
-    tokio::time::sleep(Duration::from_secs(3)).await;
-
     println!("Status driver => {:?}", driver.status().await?);
+    tokio::time::sleep(Duration::from_secs(3)).await;
     
     //select exchange
     let exchange_nyse_xpath: &str =
@@ -110,7 +90,8 @@ async fn run() -> color_eyre::Result<()> {
     let elem_exchange_nyse: WebElement = driver.find(By::XPath(exchange_nyse_xpath)).await?;
     elem_exchange_nyse.click().await?;
 
-    //wait for refresh
+    //wait for screener
+    println!("Status driver => {:?}", driver.status().await?);
     tokio::time::sleep(Duration::from_secs(3)).await;
 
     //select Market Cap.
@@ -119,7 +100,8 @@ async fn run() -> color_eyre::Result<()> {
     let elem_market_cap: WebElement = driver.find(By::XPath(market_cap_xpath)).await?;
     elem_market_cap.click().await?;
 
-    //wait for refresh
+    //wait for screener
+    println!("Status driver => {:?}", driver.status().await?);
     tokio::time::sleep(Duration::from_secs(3)).await;
 
     //select Option/Short => Optionable
@@ -128,7 +110,8 @@ async fn run() -> color_eyre::Result<()> {
     let elem_market_cap: WebElement = driver.find(By::XPath(market_cap_xpath)).await?;
     elem_market_cap.click().await?;
 
-    //wait for refresh
+    //wait for screener
+    println!("Status driver => {:?}", driver.status().await?);
     tokio::time::sleep(Duration::from_secs(3)).await;
 
     //200-Day Simple Moving Average
@@ -136,7 +119,8 @@ async fn run() -> color_eyre::Result<()> {
     let elem_over_200: WebElement = driver.find(By::XPath(over_200_xpath)).await?;
     elem_over_200.click().await?;
 
-    //wait for refresh
+    //wait for screener
+    println!("Status driver => {:?}", driver.status().await?);
     tokio::time::sleep(Duration::from_secs(3)).await;
 
     //50-Day Simple Moving Average
@@ -145,8 +129,9 @@ async fn run() -> color_eyre::Result<()> {
     let elem_sma_over_50: WebElement = driver.find(By::XPath(sma_over_50_xpath)).await?;
     elem_sma_over_50.click().await?;
 
-    //wait for refresh
-    tokio::time::sleep(Duration::from_secs(3)).await;
+   //wait for screener
+   println!("Status driver => {:?}", driver.status().await?);
+   tokio::time::sleep(Duration::from_secs(3)).await;
 
     //20-Day Simple Moving Average
     let sma_over_20_xpath: &str =
@@ -154,7 +139,8 @@ async fn run() -> color_eyre::Result<()> {
     let elem_sma_over_20: WebElement = driver.find(By::XPath(sma_over_20_xpath)).await?;
     elem_sma_over_20.click().await?;
 
-    //wait for refresh
+    //wait for screener
+    println!("Status driver => {:?}", driver.status().await?);
     tokio::time::sleep(Duration::from_secs(3)).await;
 
     // price
@@ -162,7 +148,8 @@ async fn run() -> color_eyre::Result<()> {
     let elem_price: WebElement = driver.find(By::XPath(price_xpath)).await?;
     elem_price.click().await?;
 
-    //wait for refresh
+    //wait for screener
+    println!("Status driver => {:?}", driver.status().await?);
     tokio::time::sleep(Duration::from_secs(3)).await;
 
     //Pattern channel up
@@ -170,7 +157,8 @@ async fn run() -> color_eyre::Result<()> {
     let elem_pattern: WebElement = driver.find(By::XPath(pattern_xpath)).await?;
     elem_pattern.click().await?;
 
-    //wait for refresh
+    //wait for screener
+    println!("Status driver => {:?}", driver.status().await?);
     tokio::time::sleep(Duration::from_secs(3)).await;
 
     //PEG over one
@@ -179,7 +167,8 @@ async fn run() -> color_eyre::Result<()> {
     let elem_peg_over_one: WebElement = driver.find(By::XPath(peg_over_one_xpath)).await?;
     elem_peg_over_one.click().await?;
 
-    //wait for refresh
+    //wait for screener
+    println!("Status driver => {:?}", driver.status().await?);
     tokio::time::sleep(Duration::from_secs(3)).await;
 
     //EPS year positive
@@ -188,7 +177,8 @@ async fn run() -> color_eyre::Result<()> {
     let elem_eps_year: WebElement = driver.find(By::XPath(eps_year_xpath)).await?;
     elem_eps_year.click().await?;
 
-    //wait for refresh
+    //wait for screener
+    println!("Status driver => {:?}", driver.status().await?);
     tokio::time::sleep(Duration::from_secs(3)).await;
 
     //EPS qtr positive
@@ -197,7 +187,8 @@ async fn run() -> color_eyre::Result<()> {
     let elem_eps_qtr: WebElement = driver.find(By::XPath(eps_qtr_xpath)).await?;
     elem_eps_qtr.click().await?;
 
-    //wait for refresh
+    //wait for screener
+    println!("Status driver => {:?}", driver.status().await?);
     tokio::time::sleep(Duration::from_secs(3)).await;
 
     //PEG over 1
@@ -206,7 +197,8 @@ async fn run() -> color_eyre::Result<()> {
     let elem_peg: WebElement = driver.find(By::XPath(peg_xpath)).await?;
     elem_peg.click().await?;
 
-    //wait for refresh
+    //wait for screener
+    println!("Status driver => {:?}", driver.status().await?);
     tokio::time::sleep(Duration::from_secs(3)).await;
 
     //BETA 
@@ -215,11 +207,14 @@ async fn run() -> color_eyre::Result<()> {
     let elem_beta: WebElement = driver.find(By::XPath(beta_xpath)).await?;
     elem_beta.click().await?;
 
-    //wait for refresh
-    tokio::time::sleep(Duration::from_secs(3)).await;
+   //wait for screener
+   println!("Status driver => {:?}", driver.status().await?);
+   tokio::time::sleep(Duration::from_secs(3)).await;
     
     //wait for debug not necessary
     tokio::time::sleep(Duration::from_secs(20)).await;
+
+    // start save result
 
     // thead
     let table_result_thead_xpath = "/html/body/div[4]/table/tbody/tr[4]/td/div/table/tbody/tr[5]/td/table/tbody/tr/td/table/thead" ;
@@ -258,30 +253,8 @@ async fn run() -> color_eyre::Result<()> {
             println!("cell Text: {}",tbody_cell.text().await?);
         }
     }
-
+ 
     
-
-    // get result
-    // let result_xpath: &str="/html/body/div[4]/table/tbody/tr[4]/td/div/table/tbody/tr[3]/td/div/div/div[1]";
-    // let elem_result: Result<WebElement, std::num::ParseIntError> = driver.find(By::XPath(result_xpath)).await?;
-    // println!("Ticker {}", elem_result);
-
-    //from here
-    //https://docs.rs/thirtyfour/latest/thirtyfour/struct.WebElement.html
-    // let html: String = elem_result.inner_html().await?;
-    // println!("Inner HTML =>{}", html);
-
-    //write to file
-    // fs::write("/home/trapapa/selenium_output.txt", html).expect("Unable to write file");
-
-    /*
-    let package = parser::parse("<root>hello</root>").expect("failed to parse XML");
-    let document = package.as_document();
-
-    let value = evaluate_xpath(&document, "/root").expect("XPath evaluation failed");
-
-    println!("Result XPATH {}", value.string());
-    */
 
     Ok(())
 }

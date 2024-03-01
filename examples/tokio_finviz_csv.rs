@@ -92,6 +92,7 @@ async fn run() -> color_eyre::Result<()> {
     elem_screener_all.click().await?;
 
     println!("Status driver => {:?}", driver.status().await?);
+    
     //wait for screener
     tokio::time::sleep(Duration::from_secs(3)).await;
 
