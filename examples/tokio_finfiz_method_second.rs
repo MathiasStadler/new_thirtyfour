@@ -23,8 +23,7 @@ fn main() -> color_eyre::Result<(),Box<dyn Error>>  {
     pub async fn run() -> color_eyre::Result<(),Box<dyn Error>> {
     
 
-        let _place: &str ="Place";
-
+    let _place: &str ="Place";
     let _driver = initialize_driver().await?;
     let url = Url::parse("https://finviz.com")?;
 
@@ -34,7 +33,17 @@ fn main() -> color_eyre::Result<(),Box<dyn Error>>  {
     search_location(&_driver, _place).await?;
     thread::sleep(Duration::from_secs(2));
 
-    scrape_all(_driver).await?;
+    scrape_all(_driver.clone()).await?;
+    close_browser(_driver.clone()).await?;
+
+    Ok(())
+}
+
+async fn close_browser(_driver: WebDriver) -> Result<(), Box<dyn Error>> {
+
+
+    // Always explicitly close the browser.
+    _driver.quit().await?;
 
     Ok(())
 }
