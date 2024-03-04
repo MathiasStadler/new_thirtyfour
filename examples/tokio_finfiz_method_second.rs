@@ -11,6 +11,31 @@ use thirtyfour::{
 use url::Url;
 
 
+const WEB_XPATH:&[&[&str]] = &[
+     //No.,FieldName,xpath        
+     &["1","accept","/html/body/div[1]/div/div/div/div[2]/div/button[3]"],
+     &["2","screener","/html/body/table[2]/tbody/tr/td/table/tbody/tr/td[3]/a"],
+     &["3","screener all view","/html/body/div[4]/table/tbody/tr[2]/td/div/div[2]/div[5]"],
+     &["4","select exchange","/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[1]/td[2]/select/option[3]"],
+     &["5","select Market Cap","/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[1]/td[2]/select/option[3]"],
+     &["6","select Option/Short","/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[8]/td[10]/select/option[2]"],
+     &["7","200-Day Simple Moving Average","/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[10]/td[8]/select/option[12]"],
+     &["8","sma_over_50_xpath","/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[10]/td[6]/select/option[8]"],
+     &["9","sma_over_20_xpath","/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[10]/td[4]/select/option[8]"],
+     &["10","price_xpath","/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[13]/td[8]/select/option[39]"],
+     &["11","pattern_xpath","/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[13]/td[8]/select/option[39]"],
+     &["12","peg_over_one_xpath","/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[2]/td[8]/select/option[7]"],
+     &["13","eps_year_xpath","/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[3]/td[8]/select/option[3]"],
+     &["14","eps_qtr_xpath","/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[4]/td[8]/select/option[3]"],
+     &["15","peg_xpath","/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[2]/td[8]/select/option[7]"],
+     &["16","beta_xpath","/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[12]/td[6]/select/option[7]"],
+     &["r1","colum_name","/html/body/div[4]/table/tbody/tr[4]/td/div/table/tbody/tr[5]/td/table/tbody/tr/td/table/thead"],
+     &["r2","screener_result","/html/body/div[4]/table/tbody/tr[4]/td/div/table/tbody/tr[5]/td/table/tbody/tr/td/table/tbody/tr"],
+     
+         
+];
+
+
 fn main() -> color_eyre::Result<(),Box<dyn Error>>  {
     let rt: tokio::runtime::Runtime = tokio::runtime::Builder::new_current_thread()
         .enable_all()
@@ -18,10 +43,7 @@ fn main() -> color_eyre::Result<(),Box<dyn Error>>  {
     rt.block_on(run())
 }
 
-
-
     pub async fn run() -> color_eyre::Result<(),Box<dyn Error>> {
-    
 
     let _place: &str ="Place";
     let _driver = initialize_driver().await?;
@@ -39,8 +61,7 @@ fn main() -> color_eyre::Result<(),Box<dyn Error>>  {
     Ok(())
 }
 
-async fn close_browser(_driver: WebDriver) -> Result<(), Box<dyn Error>> {
-
+async fn close_browser(_driver: WebDriver) -> color_eyre::Result<(),Box<dyn Error>> {
 
     // Always explicitly close the browser.
     _driver.quit().await?;
@@ -48,7 +69,48 @@ async fn close_browser(_driver: WebDriver) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-async fn scrape_all(_driver: WebDriver) -> Result<(), Box<dyn Error>> {
+async fn wait_seconds_of_browser(_driver: WebDriver,waiting_period:u64) -> color_eyre::Result<(),Box<dyn Error>> {
+
+    // wait for page already load
+println!("Status driver => {:?}", _driver.status().await?);
+
+tokio::time::sleep(Duration::from_secs(waiting_period)).await;
+
+Ok(())
+}
+
+async fn scrape_all(_driver: WebDriver) ->  color_eyre::Result<(),Box<dyn Error>> {
+
+    //We value your privacy 
+    // let _elem_form: WebElement = _driver
+    //     .find(By::XPath(
+    //         "/html/body/div[1]/div/div/div/div[2]/div/button[3]",
+    //     ))
+    //     .await?;
+    // _elem_form.click().await?;
+
+    // let elem_form: WebElement = _driver
+    //     .find(By::XPath(
+    //         WEB_XPATH[0][2],
+    //        // "/html/body/div[1]/div/div/div/div[2]/div/button[3]",
+    //     ))
+    //     .await?;
+    // elem_form.click().await?;
+
+    for field in 0 .. WEB_XPATH.len() {
+
+        println!("{}",WEB_XPATH[field][2]);
+        let elem_form: WebElement = _driver
+        .find(By::XPath(
+            WEB_XPATH[field][2],
+           // "/html/body/div[1]/div/div/div/div[2]/div/button[3]",
+        ))
+        .await?;
+    elem_form.click().await?;
+    wait_seconds_of_browser(_driver.clone(),5).await?;
+    }
+
+    wait_seconds_of_browser(_driver.clone(),30).await?;
 
     Ok(())
 }
