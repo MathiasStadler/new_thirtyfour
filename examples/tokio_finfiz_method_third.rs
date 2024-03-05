@@ -1,11 +1,12 @@
 
 
-use serde::Serialize;
+// use serde::Serialize;
 use std::error::Error;
 use std::thread;
 use std::time::Duration;
 use thirtyfour::{
-    prelude::{ElementWaitable, WebDriverError},
+    // prelude::{ElementWaitable, WebDriverError},
+    prelude::{WebDriverError},
     By, DesiredCapabilities, WebDriver, WebElement,
 };
 use url::Url;
@@ -107,7 +108,7 @@ async fn scrape_all(_driver: WebDriver) ->  color_eyre::Result<(),Box<dyn Error>
 
         println!("No.   => {}",WEB_XPATH[field][0]);
         println!("Field => {}",WEB_XPATH[field][1]);
-        println!("XPath => {}",WEB_XPATH[field][2]);
+        // println!("XPath => {}",WEB_XPATH[field][2]);
         let elem_form: WebElement = _driver
         .find(By::XPath(
             WEB_XPATH[field][2],
@@ -126,44 +127,81 @@ async fn scrape_all(_driver: WebDriver) ->  color_eyre::Result<(),Box<dyn Error>
 //save_result_table
 async fn save_result_table(_driver: WebDriver) ->  color_eyre::Result<(),Box<dyn Error>> {
 
-    const SAVE_TABLE:&[&[&str]] = &[
+    const RESULT_TABLE:&[&[&str]] = &[
      //No.,FieldName,xpath        
-     &["t1","colum_name","/html/body/div[4]/table/tbody/tr[4]/td/div/table/tbody/tr[5]/td/table/tbody/tr/td/table/thead"],
+     &["t1","colum_name","/html/body/div[4]/table/tbody/tr[4]/td/div/table/tbody/tr[5]/td/table/tbody/tr/td/table/thead/tr"],
      &["t2","No.:","/html/body/div[4]/table/tbody/tr[4]/td/div/table/tbody/tr[5]/td/table/tbody/tr/td/table/tbody/tr"],
-     ];
+      ];
+  
+        
+        let mut field=0;
 
-     
-        //debug
-        let field=0;
-        println!("No.   => {}",SAVE_TABLE[field][0]);
-        println!("Field => {}",SAVE_TABLE[field][1]);
-        println!("XPath => {}",SAVE_TABLE[field][2]);
+        // debug
+        // println!("No.   => {}",RESULT_TABLE[field][0]);
+        // println!("Field => {}",RESULT_TABLE[field][1]);
+        // println!("XPath => {}",RESULT_TABLE[field][2]);
 
-        let thead_rows_vec:Vec<WebElement> = _driver.find_all(By::XPath(SAVE_TABLE[field][2])).await?;
+        let thead_rows_vec:Vec<WebElement> = _driver.find_all(By::XPath(RESULT_TABLE[field][2])).await?;
+        
+        let mut row = 0;
+        
         for thead_row in thead_rows_vec{
-            println!("row => {}",thead_row);
-            println!("row Name: {}",thead_row.tag_name().await?);
-            println!("row Text: {}",thead_row.text().await?);
+                       
+            // println!("row => {}",thead_row);
+            // println!("thead_row Name: {}",thead_row.tag_name().await?);
+            // println!("thead_row Text: {}",thead_row.text().await?);
 
-        //debug
-        let field=1;
-        println!("No.   => {}",SAVE_TABLE[field][0]);
-        println!("Field => {}",SAVE_TABLE[field][1]);
-        println!("XPath => {}",SAVE_TABLE[field][2]);
-        
-        let thead_cell_vec:Vec<WebElement> = thead_row.find_all(By::XPath(SAVE_TABLE[field][2])).await?;
-        
-        for thead_cell in thead_cell_vec {
-            println!("cell => {}",thead_cell);
-            println!("cell Name: {}",thead_cell.tag_name().await?);
-            println!("cell Text: {}",thead_cell.text().await?);
-        }
-        }
+            let thead_cell_vec:Vec<WebElement> = thead_row.find_all(By::XPath("td")).await?;
 
+            let mut column = 0;
+            for thead_cell in thead_cell_vec {
+               column = column + 1 ;
+               // println!("row/column {}/{}",row,column);
+               // println!("tbody_cell: cell => {}",thead_cell);
+               // println!("tbody_cell: cell Name: {}",thead_cell.tag_name().await?);
+                // println!("thead_cell: cell headline text (): {}",thead_cell.text().await?);
+                println!("row/column {}/{} => {}",row,column,thead_cell.text().await?)
+             } //finish inner for loop => thead_cell
+
+            } //finish for loop => thead_row
+        
+        
+        
+        field=1;
+        
+        // debug
+        // println!("No.   => {}",RESULT_TABLE[field][0]);
+        // println!("Field => {}",RESULT_TABLE[field][1]);
+        // println!("XPath => {}",RESULT_TABLE[field][2]);
+        
+        let tbody_row_vec:Vec<WebElement> = _driver.find_all(By::XPath(RESULT_TABLE[field][2])).await?;
+        
+        // println!("Row length(vector) {} " ,tbody_row_vec.len());
+        row = 0;
+        for tbody_row in tbody_row_vec {
+            row = row + 1;
+            // println!("row (vector) => {}",row);
+            
+            // println!("tbody_row : cell => {}",tbody_row);
+            // println!("tbody_row : cell Name: {}",tbody_row.tag_name().await?);
+            // println!("tbody_row : cell Text: {}",tbody_row.text().await?);
+        
+            let tbody_cell_vec:Vec<WebElement> = tbody_row.find_all(By::XPath("td")).await?;
+        
+            let mut column = 0;
+            for tbody_cell in tbody_cell_vec {
+               column = column + 1 ;
+               // println!("row/column {}/{}",row,column);
+               // println!("tbody_cell: cell => {}",tbody_cell);
+               // println!("tbody_cell: cell Name: {}",tbody_cell.tag_name().await?);
+               // println!("tbody_cell: cell Text: {}",tbody_cell.text().await?);
+               println!("row/column {}/{} => {}",row,column,tbody_cell.text().await?);
+             } //finish inner for loop => tbody_cell
+                
+        }//finish for loop => tbody_row
+    
     Ok(())
 }
-
-// /html/body/div[4]/table/tbody/tr[4]/td/div/table/tbody/tr[5]/td/table/tbody/tr/td/table/tbody/tr[1]/td[1]/a
 
 async fn initialize_driver() -> Result<WebDriver, WebDriverError> {
     let caps = DesiredCapabilities::chrome();
