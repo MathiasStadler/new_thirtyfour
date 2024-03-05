@@ -9,6 +9,8 @@ use thirtyfour::{
     By, DesiredCapabilities, WebDriver, WebElement,
 };
 use url::Url;
+use std::fs::File;
+use std::io::prelude::*;
 
 
 const WEB_XPATH:&[&[&str]] = &[
@@ -29,8 +31,8 @@ const WEB_XPATH:&[&[&str]] = &[
      &["14","eps_qtr_xpath","/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[4]/td[8]/select/option[3]"],
      &["15","peg_xpath","/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[2]/td[8]/select/option[7]"],
      &["16","beta_xpath","/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[12]/td[6]/select/option[7]"],
-     &["r1","colum_name","/html/body/div[4]/table/tbody/tr[4]/td/div/table/tbody/tr[5]/td/table/tbody/tr/td/table/thead"],
-     &["r2","screener_result","/html/body/div[4]/table/tbody/tr[4]/td/div/table/tbody/tr[5]/td/table/tbody/tr/td/table/tbody/tr"],
+    // &["r1","colum_name","/html/body/div[4]/table/tbody/tr[4]/td/div/table/tbody/tr[5]/td/table/tbody/tr/td/table/thead"],
+    // &["r2","screener_result","/html/body/div[4]/table/tbody/tr[4]/td/div/table/tbody/tr[5]/td/table/tbody/tr/td/table/tbody/tr"],
      
          
 ];
@@ -56,6 +58,7 @@ fn main() -> color_eyre::Result<(),Box<dyn Error>>  {
     thread::sleep(Duration::from_secs(2));
 
     scrape_all(_driver.clone()).await?;
+    screenshot_browser(_driver.clone()).await?;
     close_browser(_driver.clone()).await?;
 
     Ok(())
@@ -68,6 +71,24 @@ async fn close_browser(_driver: WebDriver) -> color_eyre::Result<(),Box<dyn Erro
 
     Ok(())
 }
+
+async fn screenshot_browser(_driver: WebDriver) -> color_eyre::Result<(),Box<dyn Error>> {
+
+    //screenshot of browser windows
+    // FROM HERE
+    // https://stackoverflow.com/questions/60999624/trying-to-take-and-save-a-screenshot-of-a-specific-element-selenium-python-ch
+
+    let screenshot = _driver.screenshot_as_png().await?;
+
+    // FROM HERE  write to file
+    // https://doc.rust-lang.org/std/fs/struct.File.html
+    let mut file = File::create("foo.png")?;
+    file.write_all(&screenshot)?;
+
+    println!("Screenshot of browser windows => {:?} ",screenshot);
+    Ok(())
+}
+
 
 async fn wait_seconds_of_browser(_driver: WebDriver,waiting_period:u64) -> color_eyre::Result<(),Box<dyn Error>> {
 
