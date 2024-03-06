@@ -145,36 +145,39 @@ async fn save_result_table(_driver: WebDriver) ->  color_eyre::Result<(),Box<dyn
         let mut wtr = Writer::from_writer(vec![]);
 
         // debug
-        println!("No.   => {}",RESULT_TABLE[0][0]);
-        println!("Field => {}",RESULT_TABLE[0][1]);
-        println!("XPath => {}",RESULT_TABLE[0][2]);
+        println!("No.   => {}",RESULT_TABLE[field][0]);
+        println!("Field => {}",RESULT_TABLE[field][1]);
+        println!("XPath => {}",RESULT_TABLE[field][2]);
 
         let thead_rows_vec:Vec<WebElement> = _driver.find_all(By::XPath(RESULT_TABLE[0][2])).await?;
         
-        println!("vec len => {:?}",thead_rows_vec.len());
+        println!("DEBUG: thead_rows_vec len => {:?}",thead_rows_vec.len());
 
         let mut row = 0;
         
         for thead_row in thead_rows_vec{
-     
+                 
             let thead_cell_vec:Vec<WebElement> = thead_row.find_all(By::XPath("th")).await?;
 
+            println!("DEBUG: thead_cell_vec len => {:?}",thead_cell_vec.len());
+            
             let mut column = 0;
             for thead_cell in thead_cell_vec {
                column = column + 1 ;
                let cell_text =thead_cell.text().await?;
-               println!("row/column {}/{} => {}",row,column,cell_text);
+               println!("DEBUG: write_field row/column {}/{} => {}",row,column,cell_text);
                wtr.write_field(cell_text)?;
              } //finish inner for loop => thead_cell
 
+            println!("DEBUG: write_record"); 
             &wtr.write_record(None::<&[u8]>)?;
 
-            //} //finish for loop => thead_row
-            
-             
-        
-        
         field=1;
+
+        // debug
+        println!("No.   => {}",RESULT_TABLE[field][0]);
+        println!("Field => {}",RESULT_TABLE[field][1]);
+        println!("XPath => {}",RESULT_TABLE[field][2]);
                 
         let tbody_row_vec:Vec<WebElement> = _driver.find_all(By::XPath(RESULT_TABLE[field][2])).await?;
                
@@ -187,13 +190,15 @@ async fn save_result_table(_driver: WebDriver) ->  color_eyre::Result<(),Box<dyn
             for tbody_cell in tbody_cell_vec {
                column = column + 1 ;
                let cell_text = tbody_cell.text().await?;
-               println!("row/column {}/{} => {}",row,column,cell_text);
+               println!("DEBUG: write_field row/column {}/{} => {}",row,column,cell_text);
                wtr.write_field(cell_text)?;
              } //finish inner for loop => tbody_cell
                 
-        }//finish for loop => tbody_row
+        
+        println!("DEBUG: write_record");
         &wtr.write_record(None::<&[u8]>)?;
-    }
+        }//finish for loop => tbody_row
+    }//finish for loop => thead_row
 
     let mut file = File::create("result.csv")?;
     file.write_all(&wtr.into_inner()?)?;
