@@ -4,14 +4,19 @@
 use std::error::Error;
 use std::thread;
 use std::time::Duration;
+use std::fs::File;
+use std::io::prelude::*;
+
+
+
+use csv::Writer;
 use thirtyfour::{
     // prelude::{ElementWaitable, WebDriverError},
     prelude::{WebDriverError},
     By, DesiredCapabilities, WebDriver, WebElement,
 };
 use url::Url;
-use std::fs::File;
-use std::io::prelude::*;
+
 
 
 const WEB_XPATH:&[&[&str]] = &[
@@ -62,6 +67,7 @@ fn main() -> color_eyre::Result<(),Box<dyn Error>>  {
     screenshot_browser(_driver.clone()).await?;
     save_result_table(_driver.clone()).await?;
     // close_browser(_driver.clone()).await?;
+    
 
     Ok(())
 }
@@ -130,41 +136,71 @@ async fn save_result_table(_driver: WebDriver) ->  color_eyre::Result<(),Box<dyn
     const RESULT_TABLE:&[&[&str]] = &[
      //No.,FieldName,xpath        
      &["t1","colum_name","/html/body/div[4]/table/tbody/tr[4]/td/div/table/tbody/tr[5]/td/table/tbody/tr/td/table/thead/tr"],
-     &["t2","No.:","/html/body/div[4]/table/tbody/tr[4]/td/div/table/tbody/tr[5]/td/table/tbody/tr/td/table/tbody/tr"],
+     &["t2","No.:",      "/html/body/div[4]/table/tbody/tr[4]/td/div/table/tbody/tr[5]/td/table/tbody/tr/td/table/tbody/tr"],
       ];
   
-        
         let mut field=0;
 
-        // debug
-        // println!("No.   => {}",RESULT_TABLE[field][0]);
-        // println!("Field => {}",RESULT_TABLE[field][1]);
-        // println!("XPath => {}",RESULT_TABLE[field][2]);
+        // let mut wtr = Writer::from_writer(vec![]);
 
-        let thead_rows_vec:Vec<WebElement> = _driver.find_all(By::XPath(RESULT_TABLE[field][2])).await?;
+        // debug
+        println!("No.   => {}",RESULT_TABLE[0][0]);
+        println!("Field => {}",RESULT_TABLE[0][1]);
+        println!("XPath => {}",RESULT_TABLE[0][2]);
+
+        let thead_rows_vec:Vec<WebElement> = _driver.find_all(By::XPath(RESULT_TABLE[0][2])).await?;
         
+        println!("vec len => {:?}",thead_rows_vec.len());
+
         let mut row = 0;
         
         for thead_row in thead_rows_vec{
                        
-            // println!("row => {}",thead_row);
+           //  println!("HERE => row(thead) => {}",thead_row);
             // println!("thead_row Name: {}",thead_row.tag_name().await?);
-            // println!("thead_row Text: {}",thead_row.text().await?);
+            
+            // let table_headline=thead_row.await?;
 
-            let thead_cell_vec:Vec<WebElement> = thead_row.find_all(By::XPath("td")).await?;
+            // let table_headline=thead_row.text().await?;
+            
+            
+            //println!("thead_row Text: {}",table_headline);
+            
+            // let column_headline_vector:Vec<&str> = table_headline.split(' ').collect();
+            
+            //println!("DEBUG: Table column headline => {}", sv2.len());
+            
+            // for column_headline in column_headline_vector.iter() {
+            // println!("DEBUG: Table column headline => {}", column_headline);
+            // wtr.write_field(column_headline)?;
+            // }
+            
+            // for column_headline in table_headline.split_whitespace() {
+            //     println!("DEBUG: Table column headline => {}", column_headline);
+            //     wtr.write_field(column_headline)?;
+            // }
+            // wtr.write_record(None::<&[u8]>)?;
+
+            let thead_cell_vec:Vec<WebElement> = thead_row.find_all(By::XPath("th")).await?;
 
             let mut column = 0;
             for thead_cell in thead_cell_vec {
                column = column + 1 ;
+               let cell_text =thead_cell.text().await?;
                // println!("row/column {}/{}",row,column);
                // println!("tbody_cell: cell => {}",thead_cell);
                // println!("tbody_cell: cell Name: {}",thead_cell.tag_name().await?);
                 // println!("thead_cell: cell headline text (): {}",thead_cell.text().await?);
-                println!("row/column {}/{} => {}",row,column,thead_cell.text().await?)
+                println!("row/column {}/{} => {}",row,column,cell_text);
+               //  wtr.write_field(cell_text)?;
              } //finish inner for loop => thead_cell
 
-            } //finish for loop => thead_row
-        
+             //wtr.write_record(None::<&[u8]>)?;
+
+            //} //finish for loop => thead_row
+            
+            // let mut file = File::create("result.csv")?;
+            // file.write_all(&wtr.into_inner()?)?;
         
         
         field=1;
@@ -200,6 +236,8 @@ async fn save_result_table(_driver: WebDriver) ->  color_eyre::Result<(),Box<dyn
                 
         }//finish for loop => tbody_row
     
+    }
+
     Ok(())
 }
 
