@@ -1,0 +1,123 @@
+FROM debian:stable-slim 
+
+# https://github.com/arktronic/docker-ubuntu-graphical/blob/master/Dockerfile 
+
+ENV TERM xterm
+# ENV LANG="en_US.UTF-8" \
+#     LANGUAGE="en_US:en" \
+#     LC_ALL="en_US.UTF-8" \
+#     LC_CTYPE="en_US.UTF-8"
+# FROM HERE
+# https://www.cyberciti.biz/faq/perl-warning-setting-locale-failed-in-debian-ubuntu/
+ENV LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_CTYPE="en_US.UTF-8" \
+    LC_NUMERIC="en_US.UTF-8" \
+    LC_TIME="en_US.UTF-8" \
+    LC_COLLATE="en_US.UTF-8" \
+    LC_MONETARY="en_US.UTF-8" \
+    LC_MESSAGES="en_US.UTF-8" \
+    LC_PAPER="en_US.UTF-8" \
+    LC_NAME="en_US.UTF-8" \
+    LC_ADDRESS="en_US.UTF-8" \
+    LC_TELEPHONE="en_US.UTF-8" \
+    LC_MEASUREMENT="en_US.UTF-8" \
+    LC_IDENTIFICATION="en_US.UTF-8" \
+    LC_ALL=en_US.UTF-8
+
+#lxqt vs xfce
+#https://www.google.com/search?channel=fs&client=ubuntu-sn&q=lxqt+vs+xfce
+
+
+# man 8 apt-get
+
+# avoid user interaction
+ARG DEBIAN_FRONTEND=noninteractive
+
+# set language first
+RUN set -euxo \
+    && apt update \
+    && apt-get install --no-install-recommends --no-install-suggests --yes --quiet --quiet apt-utils \
+    locales \
+    apt-transport-https \
+    apt-utils \
+    && locale-gen en_US.UTF-8 \
+    DEBIAN_FRONTEND=noninteractive \
+    && apt-get install  --no-install-recommends --no-install-suggests --yes --quiet --quiet procps \
+    ca-certificates \
+    dbus \                   
+    dbus-user-session \
+    dbus-x11 \
+    dialog \
+    locales-all \
+    lxde-core \
+    lxde-icon-theme \
+    lxsession-default-apps \
+    lxterminal \
+    lxterminal \
+    vim \
+    x11-utils \
+    x11vnc \
+    xorgxrdp \
+    xrdp \
+    xvfb \
+    at-spi2-core \
+    menu \
+    x11-xserver-utils \
+    && apt-get autoremove --yes --auto-remove  \
+    && apt-get clean --yes \
+    && apt-get autoclean --yes \ 
+    && rm -rf /var/lib/apt/lists/* \
+    && update-locale LANG=en_US.UTF-8 LC_CTYPE=en_US.UTF-8 \
+    && rm /etc/xrdp/rsakeys.ini /etc/xrdp/cert.pem /etc/xrdp/key.pem \
+    && mv /usr/bin/lxpolkit /usr/bin/lxpolkit.disabled  
+
+
+RUN touch /root/.Xresources
+RUN touch /root/.Xauthority
+WORKDIR /root
+RUN mkdir .vnc
+COPY scripts/xstartup /root/.vnc/
+RUN echo "export USER=root" >> /root/.bashrc
+ENV USER root
+
+RUN mkdir -p /scripts/
+COPY scripts/bootstrap.sh dbus/docker-dbus-entrypoint.sh /scripts/
+
+RUN chmod +x /scripts/bootstrap.sh
+RUN chmod +x /scripts/docker-dbus-entrypoint.sh
+
+# new user
+ENV PUID='1000' \
+    PGID='1000' \
+    USER='user' 
+
+RUN groupadd --gid "$PGID" "$USER" && \
+    useradd --home-dir /home/$USER --shell /bin/bash --uid "$PUID" --gid "$PGID" "$USER" && \
+    mkdir /home/$USER && \
+    chown -R $USER:$USER /home/$USER && \
+    usermod -aG sudo "$USER" && \
+    usermod -aG adm "$USER" && \
+    cp /etc/skel/.bashrc /home/user/
+
+# add $USER to sudoers
+RUN mkdir -p /etc/sudoers.d && \
+    echo "user ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/"${USER}"  && \
+    chmod 0440 /etc/sudoers.d/"$USER" && \
+    cp /etc/skel/.bashrc /home/${USER}
+
+
+ENTRYPOINT ["/scripts/docker-dbus-entrypoint.sh"]
+
+
+
+
+# remove empty space
+# :g/^ /norm dw
+# sort
+# cat /tmp/t.txt |sort
+
+# cd src
+# docker buildx build --progress=plain --no-cache -t debian_lxde -f Dockerfile_lxde "."
+
+# docker run -ti debian_lxde bash    

@@ -1,0 +1,22 @@
+FROM debian:stable-slim
+
+RUN apt upgrade
+ 
+
+
+RUN set -xe \
+    && DEBIAN_FRONTEND=noninteractive \
+    && apt update \
+    && apt-get install --purge --no-install-recommends --no-install-suggests --yes procps \
+    xorg \
+    xinit \
+    lxde-core \
+    && apt-get autoremove --yes --auto-remove  \
+    && apt-get clean -y \
+    && apt-get autoclean -y \ 
+    && rm -rf /var/lib/apt/lists/*
+
+# cd src
+# docker buildx build --progress=plain --no-cache -t debian_ti -f Dockerfile "."
+
+# docker run -ti debian_ti bash
