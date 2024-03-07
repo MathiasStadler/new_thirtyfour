@@ -29,5 +29,3 @@ ansi-parser = "0.8.0"
 clearscreen = "2.0.1"
 terminfo = "0.8"
 
-[[example]]
-name = "tokio_basic"
