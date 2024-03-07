@@ -1,4 +1,5 @@
 /target
-foo.png
-result.csv
-foo.png
+*.png
+*.csv
+**/*.png
+**/*.csv
