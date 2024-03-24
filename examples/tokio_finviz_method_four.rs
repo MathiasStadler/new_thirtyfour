@@ -205,7 +205,13 @@ async fn save_result_table(_driver: WebDriver) ->  color_eyre::Result<(),Box<dyn
 }
 
 async fn initialize_driver() -> Result<WebDriver, WebDriverError> {
-    let caps = DesiredCapabilities::chrome();
+    // let caps = DesiredCapabilities::chrome();
+    
+    let mut caps: thirtyfour::ChromeCapabilities = DesiredCapabilities::chrome();
+    caps.add_chrome_arg("--headless")?;
+    caps.add_chrome_arg("--no-sandbox")?;
+    caps.add_chrome_arg("--disable-dev-shm-usage")?;
+    
     let driver = WebDriver::new("http://localhost:9515", caps).await?;
     driver.maximize_window().await?;
     Ok(driver)
