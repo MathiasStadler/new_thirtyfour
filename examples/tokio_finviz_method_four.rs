@@ -225,5 +225,8 @@ async fn search_location(_driver: &WebDriver, _place: &str) -> Result<(), WebDri
     // click_search_button(driver).await?;
 
     Ok(())
+
+    // sudo dbus-daemon --system &> /dev/null
+    // https://github.com/cypress-io/cypress/issues/4925
 }
 
