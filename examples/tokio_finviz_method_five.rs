@@ -70,6 +70,7 @@ fn main() -> color_eyre::Result<(),Box<dyn Error>>  {
     Ok(())
 }
 
+#[allow(dead_code)]
 async fn close_browser(_driver: WebDriver) -> color_eyre::Result<(),Box<dyn Error>> {
 
     // Always explicitly close the browser.
@@ -107,6 +108,9 @@ Ok(())
 }
 
 async fn scrape_all(_driver: WebDriver) ->  color_eyre::Result<(),Box<dyn Error>> {
+
+    // wait browser already load
+    wait_seconds_of_browser(_driver.clone(),20).await?;
 
     for field in 0 .. WEB_XPATH.len() {
 
@@ -168,7 +172,7 @@ async fn save_result_table(_driver: WebDriver) ->  color_eyre::Result<(),Box<dyn
              } //finish inner for loop => thead_cell
 
             println!("DEBUG: write_record"); 
-            &wtr.write_record(None::<&[u8]>)?;
+            let _= &wtr.write_record(None::<&[u8]>)?;
 
         field=1;
 
@@ -194,7 +198,10 @@ async fn save_result_table(_driver: WebDriver) ->  color_eyre::Result<(),Box<dyn
                 
         
         println!("DEBUG: write_record");
-        &wtr.write_record(None::<&[u8]>)?;
+
+        // don't use result
+        let _ = &wtr.write_record(None::<&[u8]>)?;
+        
         }//finish for loop => tbody_row
     }//finish for loop => thead_row
 
