@@ -49,11 +49,13 @@ pub async fn run() -> color_eyre::Result<(),Box<dyn Error>> {
     // Look for header to implicitly wait for the page to load.
     _driver.find(By::ClassName("firstHeading")).await?;
     
-    let _result =  _driver.title();
-    match _result.await? {
-    Ok(_title) => println!("Page title {:}", _title)
-    Err() => println("error");
-    }
+    let _result =  _driver.title().await?;
+
+    println!("{}",_result);
+    // match _result.await? {
+    // Ok(_title) => println!("Page title {:}", _title)
+    // Err(_) => println!("error"),
+    // }
 
     assert_eq!(_driver.title().await?, "Selenium - Wikipedia");
 
