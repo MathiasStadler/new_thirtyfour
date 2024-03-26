@@ -21,6 +21,6 @@ let caps = DesiredCapabilities::chrome();
 let driver = WebDriver::new("http://localhost:9515", caps).await?;
 driver.goto("https://www.rust-lang.org/").await?;
 // Always remember to close the session.
-driver.quit().await?;
+// driver.quit().await?;
 Ok(())
 }
