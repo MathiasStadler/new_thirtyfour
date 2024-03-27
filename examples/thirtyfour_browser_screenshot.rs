@@ -5,15 +5,19 @@ use std::time::Duration;
 
 use thirtyfour::prelude::*;
 
+const CLICK_ACTION = "click-action";
+const INPUT_ACTION = "input";
+
+
 const WEB_XPATH:&[&[&str]] = &[
      //No.,Action,FieldName,xpath
      // Action =>
      // click
      // input
      
-     &["1","click","accept","/html/body/div[1]/div/div/div/div[2]/div/button[3]"],
-     &["2","click","select toolbar","/html/body/table[1]/tbody/tr[1]/td/table/tbody/tr/td[1]/table/tbody/tr[2]/td/div/label/div/input"],
-     &["3","input","sendKeys and click","/html/body/table[1]/tbody/tr[1]/td/table/tbody/tr/td[1]/table/tbody/tr[2]/td/div/label/div/input"],
+     &["1",CLICK_ACTION,"accept","/html/body/div[1]/div/div/div/div[2]/div/button[3]"],
+     &["2",CLICK_ACTION,"select toolbar","/html/body/table[1]/tbody/tr[1]/td/table/tbody/tr/td[1]/table/tbody/tr[2]/td/div/label/div/input"],
+     &["3",INPUT_ACTION,"sendKeys and click","/html/body/table[1]/tbody/tr[1]/td/table/tbody/tr/td[1]/table/tbody/tr[2]/td/div/label/div/input"],
     
      ];
 
@@ -75,6 +79,13 @@ async fn path_to_screenshot(_driver: WebDriver) ->  color_eyre::Result<(),Box<dy
     elem_form.click().await?;
     
     } // end WEB_XPATH[1] eq CLICK_ACTION
+
+    if (WEB_XPATH[1] eq INPUT_ACTION){
+
+        elem_form.send_keys("TREX").await?;
+        // elem_form.click().await?;
+
+    }
     
     wait_seconds_of_browser(_driver.clone(),5).await?;
     }
