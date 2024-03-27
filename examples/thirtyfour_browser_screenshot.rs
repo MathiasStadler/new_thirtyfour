@@ -15,9 +15,7 @@ fn main() -> color_eyre::Result<(),Box<dyn Error>>  {
 pub async fn run() -> color_eyre::Result<(),Box<dyn Error>> {
 
 let caps = DesiredCapabilities::chrome();
-// NOTE: this assumes you have a WebDriver compatible server running
-//       at http://localhost:4444
-//       e.g. `geckodriver -p 4444`
+
 let driver = WebDriver::new("http://localhost:9515", caps).await?;
 driver.goto("https://www.rust-lang.org/").await?;
 // Always remember to close the session.
