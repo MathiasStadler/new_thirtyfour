@@ -100,7 +100,15 @@ async fn screenshot_browser(_driver: WebDriver) -> color_eyre::Result<(),Box<dyn
     // println!("Screenshot of browser windows => {:?} ",screenshot);
     Ok(())
 }
+async fn wait_seconds_of_browser(_driver: WebDriver,waiting_period:u64) -> color_eyre::Result<(),Box<dyn Error>> {
 
+    // wait for page already load
+println!("Status driver => {:?}", _driver.status().await?);
+
+tokio::time::sleep(Duration::from_secs(waiting_period)).await;
+
+Ok(())
+}
 
 async fn wait_seconds_of_browser(_driver: WebDriver,waiting_period:u64) -> color_eyre::Result<(),Box<dyn Error>> {
 
