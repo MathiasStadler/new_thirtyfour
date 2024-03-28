@@ -228,5 +228,11 @@ async fn search_location(_driver: &WebDriver, _place: &str) -> Result<(), WebDri
 
     // sudo dbus-daemon --system &> /dev/null
     // https://github.com/cypress-io/cypress/issues/4925
+
+    //
+    // cargo clippy  -- -D warnings
+    // cargo clippy --examples --
+    // cargo clippy -- -W clippy::pedantic
+    // cargo clippy --examples -- -W clippy::pedantic
 }
 
