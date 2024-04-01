@@ -2,11 +2,12 @@ use std::fs::File;
 use std::error::Error;
 use std::io::prelude::*;
 use std::time::Duration;
+use std::ptr::eq;
 
 use thirtyfour::prelude::*;
 
-const CLICK_ACTION = "click-action";
-const INPUT_ACTION = "input";
+const CLICK_ACTION:&str = "click-action";
+const INPUT_ACTION:&str = "input";
 
 
 const WEB_XPATH:&[&[&str]] = &[
@@ -14,7 +15,6 @@ const WEB_XPATH:&[&[&str]] = &[
      // Action =>
      // click
      // input
-     
      &["1",CLICK_ACTION,"accept","/html/body/div[1]/div/div/div/div[2]/div/button[3]"],
      &["2",CLICK_ACTION,"select toolbar","/html/body/table[1]/tbody/tr[1]/td/table/tbody/tr/td[1]/table/tbody/tr[2]/td/div/label/div/input"],
      &["3",INPUT_ACTION,"sendKeys and click","/html/body/table[1]/tbody/tr[1]/td/table/tbody/tr/td[1]/table/tbody/tr[2]/td/div/label/div/input"],
@@ -48,6 +48,7 @@ screenshot_browser(_driver.clone(),SCREENSHOT_BROWSER).await?;
 
 // MISSING Error handling
 path_to_screenshot(_driver).await?;
+
 // Always remember to close the session.
 // driver.quit().await?;
 
@@ -61,7 +62,7 @@ async fn path_to_screenshot(_driver: WebDriver) ->  color_eyre::Result<(),Box<dy
     for field in 0 .. WEB_XPATH.len() {
 
         println!("No.   => {}",WEB_XPATH[field][0]);
-        println!(Action => {},WEB_XPATH[field][1]);
+        println!("Action => {}",WEB_XPATH[field][1]);
         println!("Field => {}",WEB_XPATH[field][2]);
         println!("XPath => {}",WEB_XPATH[field][3]);
         
@@ -73,19 +74,19 @@ async fn path_to_screenshot(_driver: WebDriver) ->  color_eyre::Result<(),Box<dy
         .await?;
 
 
-    if (WEB_XPATH[1] eq CLICK_ACTION){
+    // if (WEB_XPATH[1] eq CLICK_ACTION){
         
-    // click
-    elem_form.click().await?;
+    // // click
+    // elem_form.click().await?;
     
-    } // end WEB_XPATH[1] eq CLICK_ACTION
+    // } // end WEB_XPATH[1] eq CLICK_ACTION
 
-    if (WEB_XPATH[1] eq INPUT_ACTION){
+    // if (WEB_XPATH[1] eq INPUT_ACTION){
 
-        elem_form.send_keys("TREX").await?;
-        // elem_form.click().await?;
+    //     elem_form.send_keys("TREX").await?;
+    //     // elem_form.click().await?;
 
-    }
+    // }
     
     wait_seconds_of_browser(_driver.clone(),5).await?;
     }
