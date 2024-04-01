@@ -2,6 +2,7 @@
 use std::error::Error;
 use std::fs::File;
 use std::io::prelude::*;
+use std::process;
 use std::thread;
 use std::time::Duration;
 
@@ -11,18 +12,23 @@ use thirtyfour::{
     prelude::WebDriverError,
     By,
     DesiredCapabilities,
+    Key,
     WebDriver,
     WebElement,
 };
 
-//not necessary
-// use url::Url;
+const ACTION_CLICK: &str = "action_click";
+const ACTION_FORM_FILL_FIELD: &str = "action_form_fill_field";
 
-// /html/body/div[1]/div/div/div/div[2]/div/button[3]
-
-const WEB_XPATH:&[&[&str]] = &[
-     //No.,FieldName,xpath
-     &["1","accept","/html/body/div[1]/div/div/div/div[2]/div/button[3]"],
+const WEB_XPATH: &[&[&str]] = &[
+    //No.,Action,FieldName,xpath
+    &[
+        "1",
+        ACTION_CLICK,
+        "accept",
+        "/html/body/div[1]/div/div/div/div[2]/div/button[3]",
+    ],
+    &["2",ACTION_FORM_FILL_FIELD,"","/html/body/table[1]/tbody/tr[1]/td/table/tbody/tr/td[1]/table/tbody/tr[2]/td/div/label/div/input"],
     //  &["2","screener","/html/body/table[2]/tbody/tr/td/table/tbody/tr/td[3]/a"],
     //  &["3","screener all view","/html/body/div[4]/table/tbody/tr[2]/td/div/div[2]/div[5]"],
     //  &["4","select exchange","/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[1]/td[2]/select/option[3]"],
@@ -38,7 +44,7 @@ const WEB_XPATH:&[&[&str]] = &[
     //  &["14","eps_qtr_xpath","/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[4]/td[8]/select/option[3]"],
     //  &["15","peg_xpath","/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[2]/td[8]/select/option[7]"],
     //  &["16","beta_xpath","/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[12]/td[6]/select/option[7]"],
-    ];
+];
 
 fn main() -> color_eyre::Result<(), Box<dyn Error>> {
     color_eyre::install()?;
@@ -62,8 +68,11 @@ async fn run() -> color_eyre::Result<(), Box<dyn Error>> {
     search_location(&_driver, _place).await?;
     thread::sleep(Duration::from_secs(2));
 
-    scrape_all(_driver.clone()).await?;
+    path_to(_driver.clone()).await?;
+    #[allow(unreachable_code)]
+    process::exit(0);
     screenshot_browser(_driver.clone()).await?;
+    // take_form_field(_driver.clone()).await?;
     save_result_table(_driver.clone()).await?;
     // close_browser(_driver.clone()).await?;
 
@@ -71,9 +80,28 @@ async fn run() -> color_eyre::Result<(), Box<dyn Error>> {
 }
 
 #[allow(dead_code)]
+#[allow(dead_code)]
 async fn close_browser(_driver: WebDriver) -> color_eyre::Result<(), Box<dyn Error>> {
     // Always explicitly close the browser.
     _driver.quit().await?;
+
+    Ok(())
+}
+
+#[allow(dead_code)]
+async fn take_form_field(
+    driver: WebDriver,
+    xpath_path: &str,
+) -> color_eyre::Result<(), Box<dyn Error>> {
+    let form_field: WebElement = driver.find(By::XPath(xpath_path)).await?;
+    form_field.send_keys("trex").await?;
+    form_field.send_keys(Key::Enter.to_string()).await?;
+    wait_seconds_of_browser(driver.clone(), 5).await?;
+
+    // let search_box = eps_qtr_driver.find(By::Name("q")).await?;
+    // search_box.send_keys("trex").await?;
+    // search_box.send_keys(Key::Enter.to_string()).await?;
+    // tokio::time::sleep(std::time::Duration::from_secs(5)).await;
 
     Ok(())
 }
@@ -115,17 +143,48 @@ async fn wait_seconds_of_browser(
 // Ok(())
 // }
 
-async fn scrape_all(_driver: WebDriver) -> color_eyre::Result<(), Box<dyn Error>> {
+async fn path_to(_driver: WebDriver) -> color_eyre::Result<(), Box<dyn Error>> {
     // wait browser already load
+    // ElementWaitable
     wait_seconds_of_browser(_driver.clone(), 20).await?;
 
     for field in 0..WEB_XPATH.len() {
         println!("No.   => {}", WEB_XPATH[field][0]);
-        println!("Field => {}", WEB_XPATH[field][1]);
-        // println!("XPath => {}",WEB_XPATH[field][2]);
-        let elem_form: WebElement = _driver.find(By::XPath(WEB_XPATH[field][2])).await?;
-        elem_form.click().await?;
-        wait_seconds_of_browser(_driver.clone(), 5).await?;
+        println!("Action => {}", WEB_XPATH[field][1]);
+        println!("Field => {}", WEB_XPATH[field][2]);
+
+        if ACTION_CLICK == WEB_XPATH[field][1] {
+            println!("Action =>  ACTION_CLICK ({})", WEB_XPATH[field][1]);
+
+            let elem_form: WebElement = _driver.find(By::XPath(WEB_XPATH[field][3])).await?;
+            elem_form.click().await?;
+            wait_seconds_of_browser(_driver.clone(), 5).await?;
+        } else if ACTION_FORM_FILL_FIELD == WEB_XPATH[field][1] {
+            println!(
+                "Action =>  ACTION_FORM_FILL_FIELD ({})",
+                WEB_XPATH[field][1]
+            );
+            let elem_form: WebElement = _driver.find(By::XPath(WEB_XPATH[field][3])).await?;
+            elem_form.send_keys("TREX").await?;
+            elem_form.send_keys(Key::Enter.to_string()).await?;
+            // tokio::time::sleep(std::time::Duration::from_secs(5)).await;
+            wait_seconds_of_browser(_driver.clone(), 5).await?;
+            // /html/body/table[1]/tbody/tr[1]/td/table/tbody/tr/td[1]/table/tbody/tr[2]/td/div/label/div/input
+        } else {
+            println!("ACTION NOT FOUND");
+            process::exit(1);
+            // error not found
+        }
+
+        // old cleanup please
+        //println!("XPath => {}",WEB_XPATH[field][2]);
+
+        // #[allow(unreachable_code)]
+        // let elem_form: WebElement = _driver.find(By::XPath(WEB_XPATH[field][2])).await?;
+        // #[allow(unreachable_code)]
+        // elem_form.click().await?;
+        // #[allow(unreachable_code)]
+        // wait_seconds_of_browser(_driver.clone(), 5).await?;
     }
 
     wait_seconds_of_browser(_driver.clone(), 20).await?;
@@ -239,7 +298,6 @@ async fn search_location(_driver: &WebDriver, _place: &str) -> Result<(), WebDri
     // sudo dbus-daemon --system &> /dev/null
     // https://github.com/cypress-io/cypress/issues/4925
 }
-
 
 /*
 rustfmt  ./examples/tokio_finviz_method_five.rs
