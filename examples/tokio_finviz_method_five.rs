@@ -239,3 +239,8 @@ async fn search_location(_driver: &WebDriver, _place: &str) -> Result<(), WebDri
     // sudo dbus-daemon --system &> /dev/null
     // https://github.com/cypress-io/cypress/issues/4925
 }
+
+
+/*
+rustfmt  ./examples/tokio_finviz_method_five.rs
+*/
