@@ -17,10 +17,14 @@ use thirtyfour::{
     WebElement,
 };
 
+
+// wait
+
 const ACTION_CLICK: &str = "action_click";
 const ACTION_FORM_FILL_FIELD: &str = "action_form_fill_field";
 const ACTION_SCREENSHOT_WEB_ELEMENT: &str = "screenshot_web_element";
 
+// &["6",ACTION_,"",""],
 const WEB_XPATH: &[&[&str]] = &[
     //No.,Action,FieldName,xpath
     &[
@@ -30,8 +34,22 @@ const WEB_XPATH: &[&[&str]] = &[
         "/html/body/div[1]/div/div/div/div[2]/div/button[3]",
     ],
     &["2",ACTION_FORM_FILL_FIELD,"TREX","/html/body/table[1]/tbody/tr[1]/td/table/tbody/tr/td[1]/table/tbody/tr[2]/td/div/label/div/input"],
-    &["3",ACTION_SCREENSHOT_WEB_ELEMENT,"trex_chart.png","/html/body/div[4]/div[3]/div[3]/div[1]/div/div[1]/div/div[2]/div/div[2]/canvas[2]"],
-    //  &["4","select exchange","/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[1]/td[2]/select/option[3]"],
+    &["3",ACTION_SCREENSHOT_WEB_ELEMENT,"chart_stock.png","/html/body/div[4]/div[3]/div[3]/div[1]/div/div[1]/div/div[2]/div/div[2]/canvas[2]"],
+    &["4",ACTION_SCREENSHOT_WEB_ELEMENT,"table_chart_data.png","/html/body/div[4]/div[3]/div[4]/table/tbody/tr/td/div/table[1]/tbody/tr/td/div[2]/table"],
+    &["5",ACTION_SCREENSHOT_WEB_ELEMENT,"table_income_statement.png","/html/body/div[4]/div[3]/div[4]/table/tbody/tr/td/div/table[2]/tbody/tr[11]/td/div/table[2]"],
+    &["6",ACTION_CLICK,"balance sheet","/html/body/div[4]/div[3]/div[4]/table/tbody/tr/td/div/table[2]/tbody/tr[11]/td/div/table[1]/tbody/tr/td[1]/span/a[2]"],
+    &["7",ACTION_SCREENSHOT_WEB_ELEMENT,"table_balance_sheet.png","/html/body/div[4]/div[3]/div[4]/table/tbody/tr/td/div/table[2]/tbody/tr[11]/td/div/table[2]"],
+    &["8",ACTION_CLICK,"cash_flow","/html/body/div[4]/div[3]/div[4]/table/tbody/tr/td/div/table[2]/tbody/tr[11]/td/div/table[1]/tbody/tr/td[1]/span/a[3]"],
+    &["9",ACTION_SCREENSHOT_WEB_ELEMENT,"table_cash_flow.png","/html/body/div[4]/div[3]/div[4]/table/tbody/tr/td/div/table[2]/tbody/tr[11]/td/div/table[2]"],
+
+
+    // => /html/body/div[4]/div[3]/div[4]/table/tbody/tr/td/div/table[2]/tbody/tr[11]/td/div/table[1]/tbody/tr/td[1]/span/a[3]
+    // => /html/body/div[4]/div[3]/div[4]/table/tbody/tr/td/div/table[2]/tbody/tr[11]/td/div/table[2]
+    // => /html/body/div[4]/div[3]/div[4]/table/tbody/tr/td/div/table[2]/tbody/tr[11]/td/div/table[2]                                                      
+    
+
+    // => /html/body/div[4]/div[3]/div[4]/table/tbody/tr/td/div/table[1]/tbody/tr/td/div[2]/table
+    // => /html/body/div[4]/div[3]/div[4]/table/tbody/tr/td/div/table[1]/tbody/tr/td/div[2]
     //  &["5","select Market Cap","/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[1]/td[2]/select/option[3]"],
     //  &["6","select Option/Short","/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[8]/td[10]/select/option[2]"],
     //  &["7","200-Day Simple Moving Average","/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[10]/td[8]/select/option[12]"],
@@ -86,8 +104,7 @@ async fn close_browser(_driver: WebDriver) -> color_eyre::Result<(), Box<dyn Err
 }
 
 async fn screenshot_browser(driver: WebDriver) -> color_eyre::Result<(), Box<dyn Error>> {
-    // screenshot of browser windows
-    // FROM HERE
+    // FROM HERE  screenshot of browser windows
     // https://stackoverflow.com/questions/60999624/trying-to-take-and-save-a-screenshot-of-a-specific-element-selenium-python-ch
 
     let _screenshot = driver.screenshot_as_png().await?;
@@ -106,17 +123,14 @@ async fn screenshot_web_element (
     screenshot_name: &str,
 ) -> color_eyre::Result<(), Box<dyn Error>> {
     
-    // screenshot of browser windows
-    // FROM HERE
+    // FROM HERE screenshot of browser windows
     // https://stackoverflow.com/questions/60999624/trying-to-take-and-save-a-screenshot-of-a-specific-element-selenium-python-ch
-
-    //let screenshot = driver.screenshot_as_png().await?;
+    
     let _screenshot = web_element.screenshot_as_png().await?;
 
     // FROM HERE  write to file
     // https://doc.rust-lang.org/std/fs/struct.File.html
 
-    //let mut _file = File::create("screenshot.png")?;
     let mut _file = File::create(screenshot_name)?;
     _file.write_all(&_screenshot)?;
 
@@ -130,21 +144,11 @@ async fn wait_seconds_of_browser(
 ) -> color_eyre::Result<(), Box<dyn Error>> {
     // wait for page already load
     println!("Status driver => {:?}", _driver.status().await?);
-
+    println!("Wait {} seconds for browser",waiting_period);
     tokio::time::sleep(Duration::from_secs(waiting_period)).await;
 
     Ok(())
 }
-
-// async fn wait_seconds_of_browser(_driver: WebDriver,waiting_period:u64) -> color_eyre::Result<(),Box<dyn Error>> {
-
-//     // wait for page already load
-// println!("Status driver => {:?}", _driver.status().await?);
-
-// tokio::time::sleep(Duration::from_secs(waiting_period)).await;
-
-// Ok(())
-// }
 
 async fn path_to(_driver: WebDriver) -> color_eyre::Result<(), Box<dyn Error>> {
     // wait browser already load
