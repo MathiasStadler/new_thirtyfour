@@ -30,7 +30,7 @@ const WEB_XPATH: &[&[&str]] = &[
         "/html/body/div[1]/div/div/div/div[2]/div/button[3]",
     ],
     &["2",ACTION_FORM_FILL_FIELD,"TREX","/html/body/table[1]/tbody/tr[1]/td/table/tbody/tr/td[1]/table/tbody/tr[2]/td/div/label/div/input"],
-    &["3",ACTION_SCREENSHOT_WEB_ELEMENT,"trex_chart.png",""],
+    &["3",ACTION_SCREENSHOT_WEB_ELEMENT,"trex_chart.png","/html/body/div[4]/div[3]/div[3]/div[1]/div/div[1]/div/div[2]/div/div[2]/canvas[2]"],
     //  &["4","select exchange","/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[1]/td[2]/select/option[3]"],
     //  &["5","select Market Cap","/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[1]/td[2]/select/option[3]"],
     //  &["6","select Option/Short","/html/body/div[4]/table/tbody/tr[3]/td/div/form/table/tbody/tr[8]/td[10]/select/option[2]"],
@@ -179,7 +179,7 @@ async fn path_to(_driver: WebDriver) -> color_eyre::Result<(), Box<dyn Error>> {
                 "Action =>  ACTION_FORM_FILL_FIELD ({})",
                 WEB_XPATH[field][1]
             );
-
+            wait_seconds_of_browser(_driver.clone(), 5).await?;
             let _web_element: WebElement = _driver.find(By::XPath(WEB_XPATH[field][3])).await?;
             let _screenshot_name: &str = WEB_XPATH[field][2];
 
