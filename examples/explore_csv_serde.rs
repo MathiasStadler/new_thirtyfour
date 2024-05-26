@@ -36,5 +36,6 @@ cargo run --example explore_csv_serde < /home/trapapa/docker_debian_12_ti/src/wo
 
 Module csv::tutorial
 https://docs.rs/csv/latest/csv/tutorial/index.html
+https://docs.rs/csv/latest/csv/tutorial/index.html#setup
 
 */
