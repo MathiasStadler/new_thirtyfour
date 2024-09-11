@@ -2,6 +2,7 @@ use std::fs::File;
 use std::error::Error;
 use std::io::prelude::*;
 use std::time::Duration;
+#[allow(unused_imports)]
 use std::ptr::eq;
 
 use thirtyfour::prelude::*;
@@ -67,7 +68,7 @@ async fn path_to_screenshot(_driver: WebDriver) ->  color_eyre::Result<(),Box<dy
         println!("XPath => {}",WEB_XPATH[field][3]);
         
         
-        let elem_form: WebElement = _driver
+        let _elem_form: WebElement = _driver
         .find(By::XPath(
             WEB_XPATH[field][3],
                    ))

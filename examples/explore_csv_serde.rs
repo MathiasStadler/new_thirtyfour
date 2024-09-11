@@ -6,9 +6,13 @@ use std::{error::Error, io, process};
 
 #[derive(Debug, serde::Deserialize)]
 struct Record {
+    #[allow(dead_code)]
     city: String,
+    #[allow(dead_code)]
     region: String,
+    #[allow(dead_code)]
     country: String,
+    #[allow(dead_code)]
     population: Option<u64>,
 }
 

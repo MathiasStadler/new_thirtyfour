@@ -28,6 +28,7 @@ fn main() {
 
     const ACTION_CLICK: &str = "action_click";
     const ACTION_FORM_FILL_FIELD: &str = "action_form_fill_field";
+    #[allow(dead_code)]
     const ACTION_SELECT_BUTTON: &str = "action_select_button";
 
     first_compare_str = ACTION_CLICK;

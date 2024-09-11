@@ -4,9 +4,13 @@
     "dictionaryDefinitions": [],
     "dictionaries": [],
     "words": [
+        "clearscreen",
         "dbus",
         "rustfmt",
-        "thead"
+        "serde",
+        "terminfo",
+        "thead",
+        "thiserror"
     ],
     "ignoreWords": [],
     "import": []
