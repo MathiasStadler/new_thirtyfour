@@ -10,7 +10,8 @@
         "serde",
         "terminfo",
         "thead",
-        "thiserror"
+        "thiserror",
+        "Waitable"
     ],
     "ignoreWords": [],
     "import": []
